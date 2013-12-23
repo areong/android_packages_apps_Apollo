@@ -113,6 +113,16 @@
     <string name="settings_download_artist_images_title">下載缺失的演出者影像</string>
     <string name="settings_open_source_licenses">開放原始碼授權</string>
     <string name="settings_version_title">版本號碼</string>
+    
+    <!-- Added from HaoEn, 2013/12/23. -->
+    <string name="settings_shortcut_category">捷徑播放</string>
+    <string name="settings_shortcut">捷徑播放設定</string>
+    <string name="settings_shortcut_play_method_title">清單捷徑播放方法</string>
+    <string name="settings_shortcut_play_method_summary">選擇點擊播放清單捷徑時的播放方法</string>
+    <string name="settings_shortcut_play_method_default">預設播放方法</string>
+    <string name="settings_shortcut_play_method_randomly">隨機播放</string>
+    <string name="settings_shortcut_play_method_orderly">順序播放</string>
+    
     <string name="now_listening_to">#NowPlaying <xliff:g id="title">%1$s</xliff:g> by <xliff:g id="artist">%2$s</xliff:g> #Apollo</string>
     <string name="share_track_using">分享曲目使用：</string>
     <string name="color_picker_title">配色方案</string>

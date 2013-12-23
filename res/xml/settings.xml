@@ -58,6 +58,20 @@
             android:summary="@string/settings_delete_cache_summary"
             android:title="@string/settings_delete_cache_title" />
     </PreferenceCategory>
+    
+    <!-- Added from HaoEn, 2013/12/23. -->
+    <!-- Shortcut motivation -->
+    <PreferenceCategory android:title="@string/settings_shortcut_category" >
+        <!-- Shortcut randomization -->
+        <ListPreference
+            android:key="shortcut_random"
+            android:summary="@string/settings_shortcut_play_method_summary"
+            android:title="@string/settings_shortcut_play_method_title" 
+            android:entries="@array/settings_shortcut_play_method_choice"
+            android:entryValues="@array/settings_shortcut_play_method_value"
+            android:defaultValue="default" />
+    </PreferenceCategory>
+    
     <!-- About -->
     <PreferenceCategory android:title="@string/settings_about_category" >
         <PreferenceScreen android:title="@string/settings_about_apollo" >

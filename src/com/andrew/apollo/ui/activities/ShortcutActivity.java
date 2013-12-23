@@ -37,6 +37,7 @@ import com.andrew.apollo.model.Song;
 import com.andrew.apollo.utils.Lists;
 import com.andrew.apollo.utils.MusicUtils;
 import com.andrew.apollo.utils.MusicUtils.ServiceToken;
+import com.andrew.apollo.utils.PreferenceUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,6 +89,11 @@ public class ShortcutActivity extends FragmentActivity implements ServiceConnect
      * Used with the loader and voice queries
      */
     private final ArrayList<Song> mSong = Lists.newArrayList();
+    
+    /**
+     * Used to determine play at random or in order. 
+     */
+    private PreferenceUtils mPreferences;
 
     /**
      * {@inheritDoc}
@@ -106,6 +112,8 @@ public class ShortcutActivity extends FragmentActivity implements ServiceConnect
         // Get the voice search query
         mVoiceQuery = Capitalize.capitalize(mIntent.getStringExtra(SearchManager.QUERY));
 
+        // Get the preferences
+        mPreferences = PreferenceUtils.getInstance(this);
     }
 
     /**
@@ -183,6 +191,17 @@ public class ShortcutActivity extends FragmentActivity implements ServiceConnect
                         }
                     }
                     // Finish up
+                    
+                    // Added from HaoEn, 2013/12/23.
+                    // And also cancel all 'mShouldShuffle'
+                    // Set mShouldShuffle according to settings.
+                    if (mPreferences.shortcut_rand().equals("randomly"))
+                    	mShouldShuffle = true;
+                	else if (mPreferences.shortcut_rand().equals("orderly"))
+                    	mShouldShuffle = false;
+                	else if (mPreferences.shortcut_rand().equals("default"))
+                		; // Do nothing.
+                                        
                     allDone();
                 }
             });

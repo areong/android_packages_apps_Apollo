@@ -77,6 +77,12 @@ public final class PreferenceUtils {
 
     // Key used to set the overall theme color
     public static final String DEFAULT_THEME_COLOR = "default_theme_color";
+    
+    /**
+     * Added from HaoEn, 2013/12/23.
+     */
+    // Key used to determine randomization for shortcut
+    public static final String SHORTCUT_RAND = "shortcut_random";
 
     private static PreferenceUtils sInstance;
 
@@ -382,5 +388,13 @@ public final class PreferenceUtils {
         final String defaultValue = "simple";
         return mPreferences.getString(which, defaultValue).equals(grid);
     }
-
+    
+    /**
+     * Added from HaoEn, 2013/12/23.
+     * @return True if random play from shortcut
+     *         false otherwise
+     */
+    public final String shortcut_rand() {
+        return mPreferences.getString(SHORTCUT_RAND, "default");
+    }
 }

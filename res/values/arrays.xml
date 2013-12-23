@@ -24,5 +24,18 @@
         <item>@string/page_songs</item>
         <item>@string/page_genres</item>
     </string-array>
+    
+    <!-- Added from HaoEn, 2013/12/23. -->
+    <!-- Two choice for shortcut randomization -->
+    <string-array name="settings_shortcut_play_method_choice">
+        <item>@string/settings_shortcut_play_method_default</item>
+        <item>@string/settings_shortcut_play_method_randomly</item>
+        <item>@string/settings_shortcut_play_method_orderly</item>
+    </string-array>
+    <string-array name="settings_shortcut_play_method_value">
+        <item>"default"</item>
+        <item>"randomly"</item>
+        <item>"orderly"</item>
+    </string-array>
 
 </resources>
