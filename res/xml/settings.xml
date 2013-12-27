@@ -64,7 +64,7 @@
     <PreferenceCategory android:title="@string/settings_shortcut_category" >
         <!-- Shortcut randomization -->
         <ListPreference
-            android:key="shortcut_random"
+            android:key="shortcut_play_method"
             android:summary="@string/settings_shortcut_play_method_summary"
             android:title="@string/settings_shortcut_play_method_title" 
             android:entries="@array/settings_shortcut_play_method_choice"

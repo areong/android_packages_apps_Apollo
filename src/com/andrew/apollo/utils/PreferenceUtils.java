@@ -82,7 +82,7 @@ public final class PreferenceUtils {
      * Added from HaoEn, 2013/12/23.
      */
     // Key used to determine randomization for shortcut
-    public static final String SHORTCUT_RAND = "shortcut_random";
+    public static final String SHORTCUT_PLAY_METHOD = "shortcut_play_method";
 
     private static PreferenceUtils sInstance;
 
@@ -394,7 +394,7 @@ public final class PreferenceUtils {
      * @return True if random play from shortcut
      *         false otherwise
      */
-    public final String shortcut_rand() {
-        return mPreferences.getString(SHORTCUT_RAND, "default");
+    public final String getShortcutPlayMethod() {
+        return mPreferences.getString(SHORTCUT_PLAY_METHOD, "default");
     }
 }

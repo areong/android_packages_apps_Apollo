@@ -195,11 +195,11 @@ public class ShortcutActivity extends FragmentActivity implements ServiceConnect
                     // Added from HaoEn, 2013/12/23.
                     // And also cancel all 'mShouldShuffle'
                     // Set mShouldShuffle according to settings.
-                    if (mPreferences.shortcut_rand().equals("randomly"))
+                    if (mPreferences.getShortcutPlayMethod().equals("randomly"))
                     	mShouldShuffle = true;
-                	else if (mPreferences.shortcut_rand().equals("orderly"))
+                	else if (mPreferences.getShortcutPlayMethod().equals("orderly"))
                     	mShouldShuffle = false;
-                	else if (mPreferences.shortcut_rand().equals("default"))
+                	else if (mPreferences.getShortcutPlayMethod().equals("default"))
                 		; // Do nothing.
                                         
                     allDone();

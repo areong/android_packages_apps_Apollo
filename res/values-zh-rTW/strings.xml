@@ -116,7 +116,6 @@
     
     <!-- Added from HaoEn, 2013/12/23. -->
     <string name="settings_shortcut_category">捷徑播放</string>
-    <string name="settings_shortcut">捷徑播放設定</string>
     <string name="settings_shortcut_play_method_title">清單捷徑播放方法</string>
     <string name="settings_shortcut_play_method_summary">選擇點擊播放清單捷徑時的播放方法</string>
     <string name="settings_shortcut_play_method_default">預設播放方法</string>
