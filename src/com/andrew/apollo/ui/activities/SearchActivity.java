@@ -62,6 +62,7 @@ import com.andrew.apollo.utils.MusicUtils.ServiceToken;
 import com.andrew.apollo.utils.NavUtils;
 import com.andrew.apollo.utils.ThemeUtils;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 /**
@@ -188,6 +189,8 @@ public class SearchActivity extends Activity implements LoaderCallbacks<Cursor>,
     public boolean onCreateOptionsMenu(final Menu menu) {
         // Search view
         getMenuInflater().inflate(R.menu.search, menu);
+        // Shuffle all
+        getMenuInflater().inflate(R.menu.shuffle, menu);
         // Theme the search icon
         mResources.setSearchIcon(menu);
 
@@ -241,6 +244,54 @@ public class SearchActivity extends Activity implements LoaderCallbacks<Cursor>,
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
+                return true;
+            case R.id.menu_shuffle:
+                // If no item in search result, do nothing.
+                if (mAdapter.getCount() <= 0)
+                	return true;
+                
+                Cursor cursor = mAdapter.getCursor();
+                ArrayList<Long> list = new ArrayList<Long>();
+
+                // For every item
+                for (int position = 0; position < mAdapter.getCount(); position++) {
+                    cursor.moveToPosition(position);
+                    if (cursor.isBeforeFirst() || cursor.isAfterLast()) {
+                        return true;
+                    }
+
+                    // Get the MIME type
+                    final String mimeType = cursor.getString(cursor
+                            .getColumnIndexOrThrow(MediaStore.Audio.Media.MIME_TYPE));
+
+                    // If it's a song
+                    if (mAdapter.getItemId(position) >= 0 &&
+                        (mimeType.startsWith("audio/")      ||
+                         mimeType.equals("application/ogg") ||
+                         mimeType.equals("application/x-ogg")  )  ) {
+                        // Add to list
+                    	list.add(mAdapter.getItemId(position));
+                    }
+                }
+                
+                // Close cursor
+                cursor.close();
+                cursor = null;
+                
+                // If no song, do not play.
+                if (list.size() <= 0)
+                	return true;
+                
+                // Convert to long array
+                // (Can't cast Long array to long array directly in Java.)
+                long[] listSong = new long[list.size()];
+                for (int i = 0; i < list.size(); i++)
+                	listSong[i] = list.get(i);
+                
+                // Shuffle all and show now playing.
+                MusicUtils.playAll(this, listSong, 0, true);
+                NavUtils.openAudioPlayer(this);
+                
                 return true;
             default:
                 break;
