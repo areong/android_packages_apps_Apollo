@@ -248,7 +248,7 @@ public class SearchActivity extends Activity implements LoaderCallbacks<Cursor>,
             case R.id.menu_shuffle:
                 // If no item in search result, do nothing.
                 if (mAdapter.getCount() <= 0)
-                	return true;
+                    return true;
                 
                 Cursor cursor = mAdapter.getCursor();
                 ArrayList<Long> list = new ArrayList<Long>();
@@ -270,7 +270,7 @@ public class SearchActivity extends Activity implements LoaderCallbacks<Cursor>,
                          mimeType.equals("application/ogg") ||
                          mimeType.equals("application/x-ogg")  )  ) {
                         // Add to list
-                    	list.add(mAdapter.getItemId(position));
+                        list.add(mAdapter.getItemId(position));
                     }
                 }
                 
@@ -280,13 +280,13 @@ public class SearchActivity extends Activity implements LoaderCallbacks<Cursor>,
                 
                 // If no song, do not play.
                 if (list.size() <= 0)
-                	return true;
+                    return true;
                 
                 // Convert to long array
                 // (Can't cast Long array to long array directly in Java.)
                 long[] listSong = new long[list.size()];
                 for (int i = 0; i < list.size(); i++)
-                	listSong[i] = list.get(i);
+                    listSong[i] = list.get(i);
                 
                 // Shuffle all and show now playing.
                 MusicUtils.playAll(this, listSong, 0, true);
