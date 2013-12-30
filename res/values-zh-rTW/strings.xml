@@ -37,6 +37,10 @@
     <string name="menu_detailed">詳細</string>
     <string name="menu_grid">格狀</string>
     <string name="menu_view_as">檢視</string>
+    
+    <!-- Added -->
+    <string name="menu_add_to_playlist">加入播放清單</string>
+    
     <string name="add_to_playlist">加入播放清單</string>
     <string name="add_to_favorites">加入我的最愛</string>
     <string name="add_to_queue">加入佇列</string>

@@ -31,9 +31,12 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -54,6 +57,8 @@ import com.andrew.apollo.IApolloService;
 import com.andrew.apollo.R;
 import com.andrew.apollo.cache.ImageFetcher;
 import com.andrew.apollo.format.PrefixHighlighter;
+import com.andrew.apollo.menu.CreateNewPlaylist;
+import com.andrew.apollo.menu.FragmentMenuItems;
 import com.andrew.apollo.recycler.RecycleHolder;
 import com.andrew.apollo.ui.MusicHolder;
 import com.andrew.apollo.utils.ApolloUtils;
@@ -70,7 +75,7 @@ import java.util.Locale;
  * 
  * @author Andrew Neal (andrewdneal@gmail.com)
  */
-public class SearchActivity extends Activity implements LoaderCallbacks<Cursor>,
+public class SearchActivity extends FragmentActivity implements LoaderCallbacks<Cursor>,
         OnScrollListener, OnQueryTextListener, OnItemClickListener, ServiceConnection {
     /**
      * Grid view column count. ONE - list, TWO - normal grid
@@ -189,10 +194,15 @@ public class SearchActivity extends Activity implements LoaderCallbacks<Cursor>,
     public boolean onCreateOptionsMenu(final Menu menu) {
         // Search view
         getMenuInflater().inflate(R.menu.search, menu);
-        // Shuffle all
-        getMenuInflater().inflate(R.menu.shuffle, menu);
         // Theme the search icon
         mResources.setSearchIcon(menu);
+        // Shuffle all
+        getMenuInflater().inflate(R.menu.shuffle, menu);
+
+        // Add the song to a playlist
+        final SubMenu subMenu = menu.addSubMenu(menu.NONE, R.id.menu_add_to_playlist,
+                Menu.NONE, R.string.menu_add_to_playlist);
+        MusicUtils.makePlaylistMenu(this, menu.NONE, subMenu, false);
 
         // Filter the list the user is looking it via SearchView
         mSearchView = (SearchView)menu.findItem(R.id.menu_search).getActionView();
@@ -241,62 +251,101 @@ public class SearchActivity extends Activity implements LoaderCallbacks<Cursor>,
      */
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
+        long[] list;
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
                 return true;
             case R.id.menu_shuffle:
-                // If no item in search result, do nothing.
-                if (mAdapter.getCount() <= 0)
+                // List of song in the search result  
+                list = getSongList();
+                
+                // If no song found
+                if (list == null)
                     return true;
-                
-                Cursor cursor = mAdapter.getCursor();
-                ArrayList<Long> list = new ArrayList<Long>();
-
-                // For every item
-                for (int position = 0; position < mAdapter.getCount(); position++) {
-                    cursor.moveToPosition(position);
-                    if (cursor.isBeforeFirst() || cursor.isAfterLast()) {
-                        return true;
-                    }
-
-                    // Get the MIME type
-                    final String mimeType = cursor.getString(cursor
-                            .getColumnIndexOrThrow(MediaStore.Audio.Media.MIME_TYPE));
-
-                    // If it's a song
-                    if (mAdapter.getItemId(position) >= 0 &&
-                        (mimeType.startsWith("audio/")      ||
-                         mimeType.equals("application/ogg") ||
-                         mimeType.equals("application/x-ogg")  )  ) {
-                        // Add to list
-                        list.add(mAdapter.getItemId(position));
-                    }
-                }
-                
-                // Close cursor
-                cursor.close();
-                cursor = null;
-                
-                // If no song, do not play.
-                if (list.size() <= 0)
-                    return true;
-                
-                // Convert to long array
-                // (Can't cast Long array to long array directly in Java.)
-                long[] listSong = new long[list.size()];
-                for (int i = 0; i < list.size(); i++)
-                    listSong[i] = list.get(i);
                 
                 // Shuffle all and show now playing.
-                MusicUtils.playAll(this, listSong, 0, true);
+                MusicUtils.playAll(this, list, 0, true);
                 NavUtils.openAudioPlayer(this);
                 
+                return true;
+            case FragmentMenuItems.NEW_PLAYLIST:
+                // List of song in the search result  
+                list = getSongList();
+                
+                // If no song found
+                if (list == null)
+                    return true;
+                
+                // Create new playlist
+                CreateNewPlaylist.getInstance(list).show(getSupportFragmentManager(), "CreatePlaylist");
+                return true;
+            case FragmentMenuItems.PLAYLIST_SELECTED:
+                // List of song in the search result  
+                list = getSongList();
+                
+                // If no song found
+                if (list == null)
+                    return true;
+                
+                // Add to selected playlist
+                final long mPlaylistId = item.getIntent().getLongExtra("playlist", 0);
+                MusicUtils.addToPlaylist(this, list, mPlaylistId);
                 return true;
             default:
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+    
+    /**
+     * Get a list of all song in the search result.
+     * @return A long[] storing a list song id. Null if no song found.
+     */
+    public long[] getSongList() {
+        // If no item in search result, return false.
+        if (mAdapter.getCount() <= 0)
+            return null;
+        
+        Cursor cursor = mAdapter.getCursor();
+        ArrayList<Long> list = new ArrayList<Long>();
+
+        // For every item
+        for (int position = 0; position < mAdapter.getCount(); position++) {
+            cursor.moveToPosition(position);
+            if (cursor.isBeforeFirst() || cursor.isAfterLast()) {
+                return null;
+            }
+
+            // Get the MIME type
+            final String mimeType = cursor.getString(cursor
+                    .getColumnIndexOrThrow(MediaStore.Audio.Media.MIME_TYPE));
+
+            // If it's a song
+            if (mAdapter.getItemId(position) >= 0 &&
+                (mimeType.startsWith("audio/")      ||
+                 mimeType.equals("application/ogg") ||
+                 mimeType.equals("application/x-ogg")  )  ) {
+                // Add to list
+                list.add(mAdapter.getItemId(position));
+            }
+        }
+        
+        // Close cursor
+        cursor.close();
+        cursor = null;
+        
+        // If no song, return false.
+        if (list.size() <= 0)
+            return null;
+        
+        // Convert to long array
+        // (Can't cast Long array to long array directly in Java.)
+        long[] listSong = new long[list.size()];
+        for (int i = 0; i < list.size(); i++)
+            listSong[i] = list.get(i);
+        
+        return listSong;
     }
 
     /**
